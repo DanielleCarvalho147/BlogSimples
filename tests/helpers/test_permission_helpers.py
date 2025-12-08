@@ -249,7 +249,7 @@ class TestVerificarPerfil:
     def test_perfil_nao_permitido(self, request_mock):
         """Perfil fora da lista de permitidos deve ser bloqueado"""
         resultado = verificar_perfil(
-            usuario_perfil=Perfil.CLIENTE.value,
+            usuario_perfil=Perfil.AUTOR.value,
             perfis_permitidos=[Perfil.ADMIN.value],
             request=request_mock
         )
@@ -270,7 +270,7 @@ class TestVerificarPerfil:
         """Deve usar mensagem de erro customizada"""
         with patch('util.permission_helpers.informar_erro') as mock_erro:
             verificar_perfil(
-                usuario_perfil=Perfil.CLIENTE.value,
+                usuario_perfil=Perfil.AUTOR.value,
                 perfis_permitidos=[Perfil.ADMIN.value],
                 request=request_mock,
                 mensagem_erro="Apenas administradores"
@@ -284,7 +284,7 @@ class TestVerificarPerfil:
         """Deve registrar log de tentativa de acesso"""
         with patch('util.permission_helpers.logger') as mock_logger:
             verificar_perfil(
-                usuario_perfil=Perfil.CLIENTE.value,
+                usuario_perfil=Perfil.AUTOR.value,
                 perfis_permitidos=[Perfil.ADMIN.value],
                 request=request_mock,
                 log_tentativa=True

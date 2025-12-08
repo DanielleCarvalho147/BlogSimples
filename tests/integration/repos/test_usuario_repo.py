@@ -23,7 +23,7 @@ class TestUsuarioRepoInserir:
             nome="Teste Inserir",
             email="inserir@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
 
         usuario_id = usuario_repo.inserir(usuario)
@@ -74,7 +74,7 @@ class TestUsuarioRepoObterPorId:
             nome="Teste Obter",
             email="obter@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_id = usuario_repo.inserir(usuario)
 
@@ -102,7 +102,7 @@ class TestUsuarioRepoObterPorEmail:
             nome="Teste Email",
             email="email_teste@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_repo.inserir(usuario)
 
@@ -129,7 +129,7 @@ class TestUsuarioRepoAlterar:
             nome="Nome Original",
             email="alterar@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_id = usuario_repo.inserir(usuario)
 
@@ -150,7 +150,7 @@ class TestUsuarioRepoAlterar:
             nome="Teste Perfil",
             email="perfil@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_id = usuario_repo.inserir(usuario)
 
@@ -169,7 +169,7 @@ class TestUsuarioRepoAlterar:
             nome="Inexistente",
             email="inexistente@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
 
         resultado = usuario_repo.alterar(usuario)
@@ -187,7 +187,7 @@ class TestUsuarioRepoAtualizarSenha:
             nome="Teste Senha",
             email="senha@example.com",
             senha=criar_hash_senha("SenhaAntiga@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_id = usuario_repo.inserir(usuario)
 
@@ -215,7 +215,7 @@ class TestUsuarioRepoExcluir:
             nome="Teste Excluir",
             email="excluir@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_id = usuario_repo.inserir(usuario)
 
@@ -244,7 +244,7 @@ class TestUsuarioRepoObterTodos:
                 nome=f"Usuario {i}",
                 email=f"todos{i}@example.com",
                 senha=criar_hash_senha("Senha@123"),
-                perfil=Perfil.CLIENTE.value
+                perfil=Perfil.AUTOR.value
             )
             usuario_repo.inserir(usuario)
 
@@ -265,7 +265,7 @@ class TestUsuarioRepoObterQuantidade:
             nome="Teste Quantidade",
             email="quantidade@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_repo.inserir(usuario)
 
@@ -278,15 +278,15 @@ class TestUsuarioRepoObterQuantidade:
 class TestUsuarioRepoObterTodosPorPerfil:
     """Testes para a função obter_todos_por_perfil."""
 
-    def test_obter_todos_por_perfil_cliente(self):
-        """Deve retornar apenas usuários com perfil Cliente."""
+    def test_obter_todos_por_perfil_autor(self):
+        """Deve retornar apenas usuários com perfil Autor."""
         # Inserir usuários de diferentes perfis
-        cliente = Usuario(
+        autor = Usuario(
             id=0,
-            nome="Cliente Perfil",
-            email="cliente_perfil@example.com",
+            nome="Autor Perfil",
+            email="autor_perfil@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         vendedor = Usuario(
             id=0,
@@ -295,14 +295,14 @@ class TestUsuarioRepoObterTodosPorPerfil:
             senha=criar_hash_senha("Senha@123"),
             perfil=Perfil.VENDEDOR.value
         )
-        usuario_repo.inserir(cliente)
+        usuario_repo.inserir(autor)
         usuario_repo.inserir(vendedor)
 
-        resultado = usuario_repo.obter_todos_por_perfil(Perfil.CLIENTE.value)
+        resultado = usuario_repo.obter_todos_por_perfil(Perfil.AUTOR.value)
 
         assert isinstance(resultado, list)
         for usuario in resultado:
-            assert usuario.perfil == Perfil.CLIENTE.value
+            assert usuario.perfil == Perfil.AUTOR.value
 
     def test_obter_todos_por_perfil_vendedor(self):
         """Deve retornar apenas usuários com perfil Vendedor."""
@@ -332,7 +332,7 @@ class TestUsuarioRepoBuscarPorTermo:
             nome="Fulano Buscavel",
             email="fulano_busca@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_repo.inserir(usuario)
 
@@ -348,7 +348,7 @@ class TestUsuarioRepoBuscarPorTermo:
             nome="Usuario Email",
             email="busca_email_teste@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_repo.inserir(usuario)
 
@@ -373,7 +373,7 @@ class TestUsuarioRepoBuscarPorTermo:
                 nome=f"Limite Teste {i}",
                 email=f"limite{i}@example.com",
                 senha=criar_hash_senha("Senha@123"),
-                perfil=Perfil.CLIENTE.value
+                perfil=Perfil.AUTOR.value
             )
             usuario_repo.inserir(usuario)
 
@@ -392,7 +392,7 @@ class TestUsuarioRepoToken:
             nome="Teste Token",
             email="token@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_repo.inserir(usuario)
 
@@ -409,7 +409,7 @@ class TestUsuarioRepoToken:
             nome="Teste Obter Token",
             email="obter_token@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_repo.inserir(usuario)
 
@@ -435,7 +435,7 @@ class TestUsuarioRepoToken:
             nome="Teste Limpar Token",
             email="limpar_token@example.com",
             senha=criar_hash_senha("Senha@123"),
-            perfil=Perfil.CLIENTE.value
+            perfil=Perfil.AUTOR.value
         )
         usuario_id = usuario_repo.inserir(usuario)
 

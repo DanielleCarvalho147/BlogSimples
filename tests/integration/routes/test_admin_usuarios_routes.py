@@ -13,9 +13,9 @@ from tests.test_helpers import assert_redirects_to, assert_permission_denied, as
 class TestListarUsuarios:
     """Testes de listagem de usuários"""
 
-    def test_listar_usuarios_requer_admin(self, cliente_autenticado):
-        """Cliente não deve acessar listagem de usuários"""
-        response = cliente_autenticado.get("/admin/usuarios/listar", follow_redirects=False)
+    def test_listar_usuarios_requer_admin(self, autor_autenticado):
+        """Autor não deve acessar listagem de usuários"""
+        response = autor_autenticado.get("/admin/usuarios/listar", follow_redirects=False)
         assert response.status_code in [status.HTTP_303_SEE_OTHER, status.HTTP_403_FORBIDDEN]
 
     def test_listar_usuarios_admin_acessa(self, admin_autenticado):
@@ -39,9 +39,9 @@ class TestListarUsuarios:
 class TestCadastrarUsuario:
     """Testes de cadastro de usuário por admin"""
 
-    def test_get_cadastrar_requer_admin(self, cliente_autenticado):
-        """Cliente não deve acessar formulário de cadastro"""
-        response = cliente_autenticado.get("/admin/usuarios/cadastrar", follow_redirects=False)
+    def test_get_cadastrar_requer_admin(self, autor_autenticado):
+        """Autor não deve acessar formulário de cadastro"""
+        response = autor_autenticado.get("/admin/usuarios/cadastrar", follow_redirects=False)
         assert response.status_code in [status.HTTP_303_SEE_OTHER, status.HTTP_403_FORBIDDEN]
 
     def test_get_cadastrar_admin_acessa(self, admin_autenticado):
@@ -56,7 +56,7 @@ class TestCadastrarUsuario:
             "nome": "Novo Usuario Admin",
             "email": "novousuario@example.com",
             "senha": "Senha@123",
-            "perfil": Perfil.CLIENTE.value
+            "perfil": Perfil.AUTOR.value
         }, follow_redirects=False)
 
         # Deve redirecionar para listagem
@@ -108,7 +108,7 @@ class TestCadastrarUsuario:
             "nome": "Outro Nome",
             "email": admin_teste["email"],  # Email já existe
             "senha": "Senha@123",
-            "perfil": Perfil.CLIENTE.value
+            "perfil": Perfil.AUTOR.value
         }, follow_redirects=True)
 
         assert response.status_code == status.HTTP_200_OK
@@ -120,7 +120,7 @@ class TestCadastrarUsuario:
             "nome": "Usuario Teste",
             "email": "teste@example.com",
             "senha": "123",  # Senha fraca
-            "perfil": Perfil.CLIENTE.value
+            "perfil": Perfil.AUTOR.value
         }, follow_redirects=True)
 
         assert response.status_code == status.HTTP_200_OK
@@ -142,16 +142,16 @@ class TestCadastrarUsuario:
 class TestEditarUsuario:
     """Testes de edição de usuário por admin"""
 
-    def test_get_editar_requer_admin(self, cliente_autenticado, criar_usuario):
-        """Cliente não deve acessar formulário de edição"""
+    def test_get_editar_requer_admin(self, autor_autenticado, criar_usuario):
+        """Autor não deve acessar formulário de edição"""
         # Criar um usuário qualquer para tentar editar
         criar_usuario("Outro Usuario", "outro@example.com", "Senha@123")
 
         from repo import usuario_repo
         outro = usuario_repo.obter_por_email("outro@example.com")
 
-        response = cliente_autenticado.get(f"/admin/usuarios/editar/{outro.id}", follow_redirects=False)
-        # Cliente pode receber 200 mas sem permissão, ou redirect/403
+        response = autor_autenticado.get(f"/admin/usuarios/editar/{outro.id}", follow_redirects=False)
+        # Autor pode receber 200 mas sem permissão, ou redirect/403
         # Vamos verificar se pelo menos não consegue acessar como admin
         assert response.status_code in [status.HTTP_200_OK, status.HTTP_303_SEE_OTHER, status.HTTP_403_FORBIDDEN]
 
@@ -200,7 +200,7 @@ class TestEditarUsuario:
         response = admin_autenticado.post(f"/admin/usuarios/editar/{usuario2.id}", data={
             "nome": "Usuario 2",
             "email": "usuario1@example.com",  # Email já existe
-            "perfil": Perfil.CLIENTE.value
+            "perfil": Perfil.AUTOR.value
         }, follow_redirects=True)
 
         assert response.status_code == status.HTTP_200_OK
@@ -218,7 +218,7 @@ class TestEditarUsuario:
         admin_autenticado.post(f"/admin/usuarios/editar/{usuario_original.id}", data={
             "nome": "Nome Editado",
             "email": "teste@example.com",
-            "perfil": Perfil.CLIENTE.value
+            "perfil": Perfil.AUTOR.value
         })
 
         # Verificar que senha não mudou
@@ -230,7 +230,7 @@ class TestEditarUsuario:
         response = admin_autenticado.post("/admin/usuarios/editar/99999", data={
             "nome": "Nome",
             "email": "email@example.com",
-            "perfil": Perfil.CLIENTE.value
+            "perfil": Perfil.AUTOR.value
         }, follow_redirects=False)
 
         # Deve redirecionar
@@ -277,14 +277,14 @@ class TestExcluirUsuario:
         # Deve redirecionar
         assert response.status_code == status.HTTP_303_SEE_OTHER
 
-    def test_cliente_nao_pode_excluir_usuario(self, cliente_autenticado, criar_usuario):
-        """Cliente não deve poder excluir usuários"""
+    def test_autor_nao_pode_excluir_usuario(self, autor_autenticado, criar_usuario):
+        """Autor não deve poder excluir usuários"""
         criar_usuario("Outro Usuario", "outro@example.com", "Senha@123")
 
         from repo import usuario_repo
         outro = usuario_repo.obter_por_email("outro@example.com")
 
-        response = cliente_autenticado.post(f"/admin/usuarios/excluir/{outro.id}", follow_redirects=False)
+        response = autor_autenticado.post(f"/admin/usuarios/excluir/{outro.id}", follow_redirects=False)
 
         # Deve ser bloqueado
         assert response.status_code in [status.HTTP_303_SEE_OTHER, status.HTTP_403_FORBIDDEN]
@@ -315,7 +315,7 @@ class TestAdminUsuariosRateLimiting:
                 "nome": "Teste Rate Limit",
                 "email": "ratelimit@example.com",
                 "senha": "Senha@123",
-                "perfil": Perfil.CLIENTE.value
+                "perfil": Perfil.AUTOR.value
             }, follow_redirects=False)
 
             assert_redirects_to(response, "/admin/usuarios/listar")
@@ -331,7 +331,7 @@ class TestAdminUsuariosRateLimiting:
             response = admin_autenticado.post(f"/admin/usuarios/editar/{usuario.id}", data={
                 "nome": "Nome Editado",
                 "email": "editar_rate@example.com",
-                "perfil": Perfil.CLIENTE.value
+                "perfil": Perfil.AUTOR.value
             }, follow_redirects=False)
 
             assert_redirects_to(response, "/admin/usuarios/listar")

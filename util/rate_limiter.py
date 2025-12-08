@@ -300,9 +300,9 @@ class DynamicRateLimiter(RateLimiter):
         )
 
 
-def obter_identificador_cliente(request) -> str:
+def obter_identificador_autor(request) -> str:
     """
-    Extrai identificador único do cliente (geralmente IP).
+    Extrai identificador único do autor (geralmente IP).
 
     Args:
         request: FastAPI Request object
@@ -414,7 +414,7 @@ def com_rate_limit(
     Decorator que aplica rate limiting a uma rota FastAPI.
 
     Simplifica o código repetitivo de rate limiting, extraindo automaticamente
-    o IP do cliente e verificando o limiter. Se exceder o limite, levanta
+    o IP do autor e verificando o limiter. Se exceder o limite, levanta
     HTTPException 429.
 
     Args:
@@ -454,7 +454,7 @@ def com_rate_limit(
                 return await func(*args, **kwargs)
 
             # Verificar rate limit
-            ip = obter_identificador_cliente(request)
+            ip = obter_identificador_autor(request)
             if not limiter.verificar(ip):
                 logger.warning(
                     f"Rate limit excedido [{limiter.nome}] - IP: {ip}"
